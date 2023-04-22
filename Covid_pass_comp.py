@@ -38,6 +38,8 @@ journeys[journey_int]=journeys[journey_int].astype(float)
 
 journeys["Dist"]=abs(journeys["Exit Mile"]-journeys["Ent Mile"])
 
+journeys=journeys.query("Ent!=37 and Exit!=37 and Ent!='B1' and Exit!='B1' and Ent!='B2' and Exit!='B2' and Ent!='B3' and Exit!='B3'")
+
 journeys=q1_20
 
 #%%
@@ -60,6 +62,8 @@ journey_int=["Exit_Ref","Ent Mile","Ent_Ref","Exit Mile"]
 journeys[journey_int]=journeys[journey_int].astype(float)
 
 journeys["Dist"]=abs(journeys["Exit Mile"]-journeys["Ent Mile"])
+
+journeys=journeys.query("Ent!=37 and Exit!=37 and Ent!='B1' and Exit!='B1' and Ent!='B2' and Exit!='B2' and Ent!='B3' and Exit!='B3'")
 
 journeys=q2_20
 
@@ -151,4 +155,10 @@ pass_comp["diff pct"]=pass_comp["diff"]/pass_comp["Q1"]*100
 
 pass_comp=pass_comp.sort_values("diff pct")
 
+#%%
+
 pass_comp.to_csv("covid_pass_counts.csv")
+
+q1_20.to_csv("pass_q1_2020.csv")
+
+q2_20.to_csv("pass_q2_2020.csv")
