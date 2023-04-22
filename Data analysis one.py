@@ -39,13 +39,35 @@ colname={"Payment Type (Cash or E-ZPass)":"Payment","Entrance":"Ent","Interval B
 
 tolls=tolls.rename(columns=colname)
 
+#%%
+mile_markers=pd.read_csv("NYS_Thruway_Mile_Markers.csv")
+
+journeys=pd.merge(tolls, mile_markers,on="Ent",how="left")
+
+colname2={"Mile":"Ent Mile","Exit_Ref":"Ent_Ref","Exit_x":"Exit"}
+
+journeys=journeys.rename(columns=colname2).drop(columns="Exit_y")
+
+journeys=pd.merge(journeys, mile_markers,on="Exit",how="left")
+
+colname3={"Mile":"Exit Mile","Ent_x":"Ent"}
+
+journeys=journeys.rename(columns=colname3).drop(columns="Ent_y")
+
+journey_int=["Exit_Ref","Ent Mile","Ent_Ref","Exit Mile"]
+
+journeys[journey_int]=journeys[journey_int].astype(float)
+
+journeys["Dist"]=abs(journeys["Exit Mile"]-journeys["Ent Mile"])
+
+
+
+#%%
 syr_exits=["34A","35","36","37","38","39"]
 
 #%%
-# =============================================================================
-# samp=tolls.query("Ent==syr_exits or Exit==syr_exits")
-# =============================================================================
-
+samp=tolls.query("Ent=='61' or Exit=='61'")
+samp=samp.sort_values("Ent",ascending=False)
 # =============================================================================
 # print(len(tolls))
 # 
@@ -65,12 +87,12 @@ rev=passveh["Exit"]<passveh["Ent"]
 
 # =============================================================================
 # 
-# 
 # low=passveh[["Ent","Exit"]].min()
 # 
 # high=passveh[["Ent","Exit"]].max()
 # 
 # =============================================================================
+
 passveh["trip"]=passveh["Ent"]+"-"+passveh["Exit"]
 
 passveh["trip"]=passveh["trip"].where(rev==False,passveh["Exit"]+"-"+passveh["Ent"])
@@ -96,12 +118,12 @@ rev=comveh["Exit"]<comveh["Ent"]
 
 # =============================================================================
 # 
-# 
 # low=comveh[["Ent","Exit"]].min()
 # 
 # high=comveh[["Ent","Exit"]].max()
 # 
 # =============================================================================
+
 comveh["trip"]=comveh["Ent"]+"-"+comveh["Exit"]
 
 comveh["trip"]=comveh["trip"].where(rev==False,comveh["Exit"]+"-"+comveh["Ent"])
@@ -113,5 +135,3 @@ comtrips=comtrips.drop(columns="Time")
 comtrips=comtrips.sort_values("Count")
 
 comtrips["pct"]=100*comtrips["Count"]/comtrips["Count"].sum()
-
-print(comtrips["Count"].sum())
