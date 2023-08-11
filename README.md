@@ -1,4 +1,4 @@
-# New York Thruway Tolls, Usage, and You!
+# New York Thruway Usage
 
 ## Introduction
 This project aims to analyse publicly available data on usage of the Thruway, a highway system in The State of New York connecting most major cities across the state from New York City to Albany, Syracuse, Buffalo, and points between.
